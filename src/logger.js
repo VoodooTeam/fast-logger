@@ -3,8 +3,8 @@
 const utils = require('./utils'),
   LRU = require('lru-cache');
 
-const option = {maxAge: 1000, max: 5000},
-  cache = new LRU(option);
+const cache = new LRU(50000);
+let maxAge = 1000;
 
 const APP_NAME = process.env.APP_NAME || 'UnknownAppName',
   SKELETON_LOG = {
@@ -16,16 +16,18 @@ const APP_NAME = process.env.APP_NAME || 'UnknownAppName',
   };
 
 const info = (...data) => {
-  if (cache.get(data.toString())) return;
-  cache.set(data.toString(), true);
+  const cacheName = 'info:' + data.toString();
+  if (cache.has(cacheName)) return;
+  cache.set(cacheName, true, maxAge);
   setImmediate(() => {
     generateLog('info', ...data)
   })
 };
 
 const error = (...data) => {
-  if (cache.get(data.toString())) return;
-  cache.set(data.toString(), true);
+  const cacheName = 'error:' + data.toString();
+  if (cache.has(cacheName)) return;
+  cache.set(cacheName, true, maxAge);
   setImmediate(() => {
     generateLog('error', ...data)
   })
@@ -45,7 +47,9 @@ function generateLog(type, ...data) {
       keyIndex++
     } else if (d instanceof Error) {
       finalLog.err = d.stack;
-      finalLog.errInfo = d.moreInfo
+      for (const key in d) {
+        finalLog[key] = d[key]
+      }
     } else if (typeof d === 'object') {
       for (const key in d) {
         finalLog[key] = d[key]
@@ -62,8 +66,17 @@ function cleanLogs(log) {
   }
 }
 
+/**
+ * Set the TTL of items to the cache
+ * Put -1 to disable the cache
+ *
+ * @param age of items in the cache
+ */
+const setCacheTTL = (age) => maxAge = age;
 
 module.exports = {
-  info: info,
-  error: error,
+  info,
+  error,
+  setCacheTTL,
+  cache
 };

@@ -4,7 +4,7 @@
   "description": "Fast logger witch a buffer",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test APP_NAME=Logger ./node_modules/.bin/jest",
+    "test": "APP_NAME=Logger NODE_ENV=test APP_NAME=Logger ./node_modules/.bin/jest",
     "lint": "./node_modules/.bin/eslint -c ./.eslintrc ./"
   },
   "engines": {
