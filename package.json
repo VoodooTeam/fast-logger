@@ -1,7 +1,7 @@
 {
   "name": "@voodoo.io/fast-logger",
-  "version": "0.0.1",
-  "description": "Fast logger witch a buffer",
+  "version": "0.0.2",
+  "description": "Fast logger with a buffer",
   "main": "index.js",
   "scripts": {
     "test": "APP_NAME=Logger NODE_ENV=test APP_NAME=Logger ./node_modules/.bin/jest",

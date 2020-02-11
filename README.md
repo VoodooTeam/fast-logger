@@ -9,7 +9,7 @@
 </div>
 
 # Purpose
-Simple fast logger which contain a LRU cache to avoid big spike to the stack of logs. 
+Simple fast logger which contain a LRU cache to avoid big spike to the stack of logs.
 
 # Compatibility
 
@@ -25,7 +25,7 @@ Supported and tested : >= 8.10
 # Installation
 
 ```console
-$ npm install @voodoo.io/fast-logger
+$ npm install @voodoo.io/fast-logger --save
 ```
 
 # Usage
@@ -65,13 +65,17 @@ for (let i = 0; i < 100; i++) {
 
 ### Options
 
-You can disable the logger by calling the function `setCacheTTL` with a negative integer value
+You can disable the logger by calling the function `setCacheTTL` with a negative integer value or you can customize the TTL 
+of the items in the cache
 
 ```javascript
 const logger = require('@voodoo.io/fast-logger');
 
 // cache is disable
-logger.setCacheTTL(-1)
+logger.setCacheTTL(-1);
+
+// buffer of 1 sec in the cache
+logger.setCacheTTL(1000);
 ```
 
 # Test
