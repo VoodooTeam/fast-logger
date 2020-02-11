@@ -1,5 +1,5 @@
 {
-  "name": "@voodoo.io/logger",
+  "name": "@voodoo.io/fast-logger",
   "version": "0.0.1",
   "description": "Fast logger witch a buffer",
   "main": "index.js",
@@ -8,15 +8,15 @@
     "lint": "./node_modules/.bin/eslint -c ./.eslintrc ./"
   },
   "engines": {
-    "node": ">=7.6.0"
+    "node": ">=8.0.0"
   },
   "keywords": [
     "logger"
   ],
   "bugs": {
-    "url": "https://github.com/VoodooTeam/voodoo-logger/issues"
+    "url": "https://github.com/VoodooTeam/fast-logger/issues"
   },
-  "homepage": "https://github.com/VoodooTeam/voodoo-logger#readme",
+  "homepage": "https://github.com/VoodooTeam/fast-logger#readme",
   "author": "raphael@voodoo.io",
   "license": "MIT",
   "dependencies": {
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VoodooTeam/voodoo-logger.git"
+    "url": "git+https://github.com/VoodooTeam/fast-logger.git"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
