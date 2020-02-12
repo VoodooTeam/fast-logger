@@ -16,18 +16,12 @@ const APP_NAME = process.env.APP_NAME || 'UnknownAppName',
   };
 
 const info = (...data) => {
-  const cacheName = 'info:' + data.toString();
-  if (cache.has(cacheName)) return;
-  cache.set(cacheName, true, maxAge);
   setImmediate(() => {
     generateLog('info', ...data)
   })
 };
 
 const error = (...data) => {
-  const cacheName = 'error:' + data.toString();
-  if (cache.has(cacheName)) return;
-  cache.set(cacheName, true, maxAge);
   setImmediate(() => {
     generateLog('error', ...data)
   })
@@ -36,26 +30,38 @@ const error = (...data) => {
 function generateLog(type, ...data) {
   let finalLog = utils.clone(SKELETON_LOG),
     keyName = 'data',
-    keyIndex = 0;
+    keyIndex = 0,
+    cacheName = `${type}:`;
 
   finalLog.level = type;
   finalLog.time = new Date();
   for (const d of data) {
-    if (typeof d === 'string' && finalLog.msg === '') finalLog.msg = d;
-    else if (typeof d === 'number' || typeof d === 'number' || Array.isArray(d)) {
+    if (typeof d === 'string' && finalLog.msg === '') {
+      finalLog.msg = d;
+      cacheName += d;
+    }
+    else if (typeof d === 'number' || Array.isArray(d)) {
       finalLog[`${keyName}_${keyIndex}`] = d;
-      keyIndex++
+      keyIndex++;
+      cacheName += d.toString();
     } else if (d instanceof Error) {
       finalLog.err = d.stack;
+      finalLog.errObj = d;
+      cacheName += d.toString();
       for (const key in d) {
         finalLog[key] = d[key]
       }
     } else if (typeof d === 'object') {
+      cacheName += utils.safeStringify(d);
       for (const key in d) {
         finalLog[key] = d[key]
       }
     }
   }
+
+  if (cache.has(cacheName)) return;
+  cache.set(cacheName, true, maxAge);
+
   cleanLogs(finalLog);
   console.log(utils.safeStringify(finalLog));
 }

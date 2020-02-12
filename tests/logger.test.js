@@ -14,7 +14,6 @@ describe('Logger', () => {
     logger.cache.reset()
   });
 
-
   it('Normal case', () => {
     const obj = {'key': 'value'};
     const arr = [1, 2, 6];
@@ -27,9 +26,13 @@ describe('Logger', () => {
 
   it('Error case', () => {
     const err = new Error('oops');
-    err.moreInfo = {code: 5000};
-    const obj = {'key': 'value'};
-    const errObj = new Error(JSON.stringify(obj));
+    const obj = {
+      key: 'value', data: {
+        key: [1, 2, 3], key2: [{key: 1}]
+      }
+    };
+    const errObj = new Error('oops 2');
+    errObj.moreInfo = 'more info';
     const arr = [1, 2, 6];
 
     logger.error('samples log');
@@ -43,18 +46,24 @@ describe('Logger', () => {
   it('Circular json', () => {
     const obj = {
       key: 'value',
-      circular: true
+      circular: true,
+      test: {
+        test2: [5]
+      }
     };
     obj.newValue = obj;
     logger.info(obj);
-    expect(mockConsole).toBeCalledTimes(1);
+    logger.error(obj);
+    expect(mockConsole).toBeCalledTimes(2);
   });
 
   it('Cache case', async () => {
     const obj = {key: 'value'};
+    const test = {key2: 'value'};
     logger.setCacheTTL(900);
 
     logger.info(obj);
+    logger.info(test);
     logger.info(obj);
     logger.error(obj);
     logger.error(obj);
@@ -62,7 +71,7 @@ describe('Logger', () => {
     logger.info(obj);
     logger.error(obj);
 
-    expect(mockConsole).toBeCalledTimes(4)
+    expect(mockConsole).toBeCalledTimes(5)
   });
 
   it('Without cache', () => {

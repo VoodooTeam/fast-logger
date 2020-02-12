@@ -1,6 +1,6 @@
 {
   "name": "@voodoo.io/fast-logger",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fast logger with a buffer",
   "main": "index.js",
   "scripts": {
