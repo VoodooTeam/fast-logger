@@ -6,26 +6,33 @@ const utils = require('./utils'),
 const cache = new LRU(50000);
 let maxAge = 1000;
 
-const APP_NAME = process.env.APP_NAME || 'UnknownAppName',
-  SKELETON_LOG = {
-    app: APP_NAME,
-    time: '',
-    level: '',
-    msg: '',
-    err: ''
+const levels = ['trace', 'debug', 'info', 'warn', 'error'];
+const defaultLevel = 'info';
+const APP_NAME = process.env.APP_NAME || 'UnknownAppName';
+const LOG_LEVEL = process.env.LOG_LEVEL || defaultLevel;
+const SKELETON_LOG = {
+  app: APP_NAME,
+  time: '',
+  level: '',
+  msg: '',
+  err: ''
+};
+
+let loglevelIndex = levels.indexOf(LOG_LEVEL);
+if (loglevelIndex === -1) {
+  loglevelIndex = levels.indexOf(defaultLevel);
+}
+const logFunctions = {};
+
+levels.forEach((level, index) => {
+  logFunctions[level] = (...data) => {
+    if (index >= loglevelIndex) {
+      setImmediate(() => {
+        generateLog(level, ...data)
+      });
+    }
   };
-
-const info = (...data) => {
-  setImmediate(() => {
-    generateLog('info', ...data)
-  })
-};
-
-const error = (...data) => {
-  setImmediate(() => {
-    generateLog('error', ...data)
-  })
-};
+});
 
 function generateLog(type, ...data) {
   let finalLog = utils.clone(SKELETON_LOG),
@@ -81,8 +88,7 @@ function cleanLogs(log) {
 const setCacheTTL = (age) => maxAge = age;
 
 module.exports = {
-  info,
-  error,
+  ...logFunctions,
   setCacheTTL,
   cache
 };

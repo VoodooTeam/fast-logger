@@ -37,6 +37,15 @@ Accepted format:
 - object
 - Error
 
+You can provide a var env: `LOG_LEVEL`. For example, setting "warn" will disabled trace, debug and info logs.
+Accepted values:
+- trace
+- debug
+- info _(default if wrong or none defined)_
+- warn
+- error
+
+
 ### Basic Usage
 
 ```javascript
@@ -51,7 +60,9 @@ logger.error('My error');
 
 ### Buffer
 
-The logger has a buffer of 100 ms by default if the logs are exactly the same
+The logger has a buffer of 100 ms by default if the logs are exactly the same (same objects, not same JSON-equivalent object)
+More information at: https://www.npmjs.com/package/lru-cache
+
  
 ```javascript
 const logger = require('@voodoo.io/fast-logger');
